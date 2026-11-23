@@ -20,7 +20,9 @@
 
 **[ここを押すと Collet.zip がダウンロードされます](https://github.com/jufufuhkhjfy-rgb/collet/releases/latest/download/Collet.zip)**
 
-ダウンロードした Collet.zip を右クリック →「すべて展開」で、好きな場所（デスクトップやドキュメントなど）に展開します。
+展開する前に、ダウンロードした Collet.zip を右クリック →「プロパティ」→ いちばん下の「**許可する**」にチェック →「OK」を押します。これをしないと、Windows の「スマート アプリ コントロール」が setup.bat を止めることがあります。
+
+そのあと、Collet.zip を右クリック →「すべて展開」で、好きな場所（デスクトップやドキュメントなど）に展開します。
 
 ## 2. セットアップする
 
