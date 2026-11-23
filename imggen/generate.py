@@ -7,15 +7,21 @@ Python 3.12 の専用環境（imggen\\.venv）で動かす。Collet から次の
 - 商品そのものはAIに描かせない。生成のあと、元の商品写真をそのまま上に重ね直す
 - AIで作った画像であることは、Collet が紹介文の先頭の注意書きで伝える
 """
+import importlib.util
 import io
 import json
 import random
 import sys
 from pathlib import Path
 
-import requests
-import torch
-from diffusers import StableDiffusionInpaintPipeline
+# Windows の「スマート アプリ コントロール」が scipy の部品（DLL）を止めることがある。
+# この画像作りでは scipy を使わないので、diffusers に「scipy は入っていない」と思わせて読み込ませない。
+_find_spec = importlib.util.find_spec
+importlib.util.find_spec = lambda name, *a, **k: None if name.split(".")[0] == "scipy" else _find_spec(name, *a, **k)
+
+import requests  # noqa: E402
+import torch  # noqa: E402
+from diffusers import StableDiffusionInpaintPipeline  # noqa: E402
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 MODEL = "stable-diffusion-v1-5/stable-diffusion-inpainting"

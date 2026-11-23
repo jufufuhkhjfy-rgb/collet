@@ -70,11 +70,12 @@ def _make_room(item: dict, out) -> list[str]:
     res = subprocess.run(
         [str(IMGGEN_PYTHON), str(IMGGEN_SCRIPT), ",".join(item.get("image_urls") or [item["image_url"]]),
          _GROUP_OF.get(item["genre_id"], "雑貨"), str(out), "3"],
-        capture_output=True, text=True, encoding="utf-8", timeout=900,
+        # Windows のエラーは日本語（Shift_JIS）で返ってくることがあるので、読めない文字は置きかえる
+        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=900,
         creationflags=subprocess.CREATE_NO_WINDOW,
     )
     if res.returncode != 0:
-        log.warning("画像生成に失敗: %s", res.stderr[-2000:])
+        log.warning("画像生成に失敗: %s", (res.stderr or "")[-2000:])
         raise ImageError("画像を作れませんでした。くわしくは data/collet.log を見てください。")
     paths = json.loads(res.stdout.strip().splitlines()[-1])["images"]
     return [p.replace("\\", "/").rsplit("/", 1)[-1] for p in paths]

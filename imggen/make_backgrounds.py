@@ -2,13 +2,18 @@
 
 使い方: imggen\\.venv\\Scripts\\python.exe imggen\\make_backgrounds.py <保存先フォルダ> [1ジャンルあたりの枚数]
 """
+import importlib.util
 import random
 import sys
 from pathlib import Path
 
-import torch
-from diffusers import StableDiffusionInpaintPipeline
-from PIL import Image
+# Windows の「スマート アプリ コントロール」が scipy の部品を止めることがあるので、読み込ませない（generate.py と同じ）
+_find_spec = importlib.util.find_spec
+importlib.util.find_spec = lambda name, *a, **k: None if name.split(".")[0] == "scipy" else _find_spec(name, *a, **k)
+
+import torch  # noqa: E402
+from diffusers import StableDiffusionInpaintPipeline  # noqa: E402
+from PIL import Image  # noqa: E402
 
 MODEL = "stable-diffusion-v1-5/stable-diffusion-inpainting"
 SIZE = 512
