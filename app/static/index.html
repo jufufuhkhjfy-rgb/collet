@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collet</title>
+  <link rel="icon" href="/static/icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Noto+Sans+JP:wght@400;700&display=swap">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#home">
+      <img src="/static/icon.png" alt="" width="32" height="32">
+      <span>Collet</span>
+    </a>
+    <nav class="nav" aria-label="メニュー">
+      <a href="#home" data-view="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5"/></svg>ホーム</a>
+      <a href="#queue" data-view="queue"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1 13H7L6 7Z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>今日の投稿<span id="nav-badge" class="nav-badge" hidden></span></a>
+      <a href="#settings" data-view="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>投稿設定</a>
+      <a href="#history" data-view="history"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>投稿履歴</a>
+      <a href="#plan" data-view="plan" id="nav-plan" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10.5h18M7 15h4"/></svg>販売モード</a>
+    </nav>
+    <div class="side-foot">
+      <a id="support-link" class="support-link" href="#" target="_blank" rel="noopener" hidden>Collet を応援する</a>
+      <button id="quit" class="quit" type="button">Collet を終了</button>
+    </div>
+    <img class="side-wave" src="/static/img/06-wave-lightblue.png" alt="">
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="state">
+        <span id="state-pill" class="pill">読み込み中</span>
+        <span id="next-run" class="muted small"></span>
+      </div>
+      <div id="top-actions" class="actions">
+        <button id="run-now" class="btn ghost" type="button">今すぐ候補を集める</button>
+        <button id="toggle" class="btn primary" type="button">自動で候補を集める</button>
+      </div>
+    </header>
+
+    <!-- ホーム -->
+    <section id="view-home" class="view">
+      <div class="hero">
+        <div class="hero-text">
+          <p class="eyebrow">ダッシュボード</p>
+          <h1 id="greeting">こんにちは</h1>
+          <p class="muted">今日も、いいモノを届けましょう。</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <img class="art-blob" src="/static/img/01-blob-blue.png" alt="">
+          <img class="art-icon" src="/static/icon.png" alt="">
+          <img class="art-leaf" src="/static/img/leaf-orange.png" alt="">
+          <img class="art-spark" src="/static/img/04-sparkle-orange.png" alt="">
+        </div>
+      </div>
+
+      <article id="setup-card" class="card setup" hidden>
+        <div class="card-head">
+          <h2>はじめる前に</h2>
+          <span id="setup-count" class="muted small"></span>
+        </div>
+        <p class="muted">投稿するには、次の準備が必要です。やり方は collet フォルダの README.md にあります。</p>
+        <ul id="setup-list" class="setup-list"></ul>
+      </article>
+
+      <div class="kpis">
+        <article class="card kpi">
+          <img class="kpi-mark" src="/static/img/01-blob-blue.png" alt="">
+          <p class="kpi-label">今日の投稿</p>
+          <p class="kpi-value"><span id="kpi-today">0</span><small id="kpi-limit"> / 0件</small></p>
+          <p id="kpi-today-note" class="kpi-note muted"></p>
+        </article>
+        <article class="card kpi">
+          <img class="kpi-mark" src="/static/img/07-blob-orange.png" alt="">
+          <p class="kpi-label">この7日間の投稿</p>
+          <p class="kpi-value"><span id="kpi-week">0</span><small>件</small></p>
+          <p id="kpi-week-note" class="kpi-note muted"></p>
+        </article>
+        <a class="card kpi kpi-link" href="#queue">
+          <img class="kpi-mark" src="/static/img/16-blob-dot-blue.png" alt="">
+          <p class="kpi-label">投稿待ち</p>
+          <p class="kpi-value"><span id="kpi-pending">0</span><small>件</small></p>
+          <p id="kpi-pace" class="kpi-note muted"></p>
+        </a>
+        <article class="card kpi">
+          <img class="kpi-mark" src="/static/img/12-sparkle-lightblue.png" alt="">
+          <p class="kpi-label">失敗・見送り（7日）</p>
+          <p class="kpi-value"><span id="kpi-failed">0</span><small>件</small></p>
+          <p id="kpi-failed-note" class="kpi-note muted"></p>
+        </article>
+      </div>
+
+      <article class="card chart-card">
+        <div class="card-head">
+          <h2>投稿数の推移</h2>
+          <select id="range" aria-label="表示する期間">
+            <option value="7">過去7日間</option>
+            <option value="14">過去14日間</option>
+            <option value="30">過去30日間</option>
+          </select>
+        </div>
+        <div id="chart" class="chart" role="img" aria-label="日ごとの投稿数のグラフ"></div>
+        <details class="chart-table">
+          <summary>表で見る</summary>
+          <div class="table-wrap"><table id="chart-table"></table></div>
+        </details>
+      </article>
+
+      <div class="split">
+        <article class="card">
+          <div class="card-head">
+            <h2>最近の投稿</h2>
+            <a class="link" href="#history">すべて見る →</a>
+          </div>
+          <div class="table-wrap"><table class="posts-table" id="recent-table"></table></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><h2>お知らせ</h2></div>
+          <ul id="notices" class="notices"></ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- 投稿設定 -->
+    <section id="view-settings" class="view" hidden>
+      <div class="page-head">
+        <p class="eyebrow">投稿設定</p>
+        <h1>どう投稿するかを決める</h1>
+        <p class="muted">変更はすぐに保存され、次の投稿から反映されます。</p>
+      </div>
+
+      <article id="license-card" class="card" hidden>
+        <div class="card-head">
+          <h2>有料プラン</h2>
+          <span id="license-pill" class="pill"></span>
+        </div>
+        <p id="license-text" class="muted"></p>
+        <div id="license-plans" class="plan-offers"></div>
+        <div class="key-row">
+          <input id="license-key" class="text-input" type="text" placeholder="COLLET- から始まる利用キーを貼り付け" aria-label="利用キー" autocomplete="off" spellcheck="false">
+          <button id="license-save" class="btn brand small" type="button">利用キーを入れる</button>
+        </div>
+        <div class="q-actions">
+          <button id="license-remove" class="btn text small" type="button" hidden>利用キーを外す</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>投稿のペース</h2>
+        <div id="presets" class="segmented" role="radiogroup" aria-label="投稿のペース"></div>
+        <div class="field">
+          <span class="label">投稿する時間帯</span>
+          <span class="inline">
+            <input id="active_start" type="number" min="0" max="23" inputmode="numeric" aria-label="開始時刻"> 時から
+            <input id="active_end" type="number" min="1" max="24" inputmode="numeric" aria-label="終了時刻"> 時まで
+          </span>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>ジャンル</h2>
+        <p class="muted">選んだジャンルのランキングから商品を探します。</p>
+        <div id="genres" class="genre-groups"></div>
+      </article>
+
+      <article class="card">
+        <h2>商品の条件</h2>
+        <div class="field-grid">
+          <label class="field">
+            <span class="label">レビュー評価</span>
+            <span class="inline">★ <input id="min_review_average" type="number" step="0.1" min="0" max="5"> 以上</span>
+          </label>
+          <label class="field">
+            <span class="label">レビュー件数</span>
+            <span class="inline"><input id="min_review_count" type="number" min="0"> 件以上</span>
+          </label>
+          <label class="field">
+            <span class="label">価格の上限</span>
+            <span class="inline"><input id="max_price" type="number" min="0" step="500"> 円まで</span>
+          </label>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>紹介カード画像</h2>
+        <p class="muted">AIで作った部屋やデスクの背景に、商品写真・レビューと価格・おすすめポイントを載せた画像を3枚作ります。画像を付けると、紹介文の先頭に「※画像の背景はAIで作ったイメージです。」と自動で入ります。</p>
+        <label class="check">
+          <input id="ai_images" type="checkbox">
+          <span>候補を集めるときに、紹介カードも作る</span>
+        </label>
+        <p id="images-unavailable" class="muted small" hidden>紹介カードの背景が見つかりません。</p>
+      </article>
+    </section>
+
+    <!-- 今日の投稿 -->
+    <section id="view-queue" class="view" hidden>
+      <div class="page-head">
+        <p class="eyebrow">今日の投稿</p>
+        <h1>投稿待ちの商品</h1>
+        <p id="queue-help" class="muted"></p>
+      </div>
+      <div class="queue-tools">
+        <button id="open-all" class="btn brand" type="button" hidden>まとめてROOMで開く</button>
+        <span id="ext-status" class="ext-status"></span>
+      </div>
+      <div id="queue-list" class="queue-list"></div>
+    </section>
+
+    <!-- 投稿履歴 -->
+    <section id="view-history" class="view" hidden>
+      <div class="page-head">
+        <p class="eyebrow">投稿履歴</p>
+        <h1>これまでの投稿</h1>
+        <p class="muted">商品名にカーソルを合わせると、投稿したコメントが見られます。</p>
+      </div>
+      <article class="card">
+        <div class="table-wrap"><table class="posts-table" id="history-table"></table></div>
+      </article>
+    </section>
+
+    <!-- 販売モード（作者のPCだけ） -->
+    <section id="view-plan" class="view" hidden>
+      <div class="page-head">
+        <p class="eyebrow">販売モード（あなたのPCにだけ出ます）</p>
+        <h1>Collet の配り方を決める</h1>
+        <p class="muted">ボタンを押すと、すぐに切り替わります。ここで選んだモードは、配る Collet にもそのまま入ります。</p>
+      </div>
+
+      <article class="card">
+        <h2>モード</h2>
+        <div id="plan-modes" class="segmented" role="radiogroup" aria-label="販売モード"></div>
+        <label class="check">
+          <input id="plan-preview" type="checkbox">
+          <span>使う人の見え方で確認する（作者の特別扱いを外す）</span>
+        </label>
+      </article>
+
+      <div class="split">
+        <article class="card">
+          <h2>このモードで必要なこと</h2>
+          <ul id="plan-todo" class="todo-list"></ul>
+        </article>
+        <article class="card" id="plan-support-card">
+          <h2>応援ページ</h2>
+          <label class="field">
+            <span class="label">応援ページのURL（なくてもOK）</span>
+            <input id="plan-support" class="text-input" type="url" placeholder="https://" autocomplete="off">
+          </label>
+        </article>
+        <article class="card" id="plan-free-card">
+          <h2>無料で使える機能</h2>
+          <p class="muted small">どのプランにも入れていない機能は、利用キーがなくても使えます。</p>
+          <ul id="plan-free" class="todo-list"></ul>
+        </article>
+      </div>
+
+      <div id="plan-cards" class="plan-cards"></div>
+
+      <article id="plan-auto-card" class="card">
+        <div class="card-head">
+          <h2>利用キーを自動で渡す</h2>
+          <span id="auto-pill" class="pill"></span>
+        </div>
+        <p class="muted">支払いが終わると、買った人のページに利用キーが自動で出ます。毎月の更新のときも、買った人の Collet が新しい利用キーを自動で受け取ります。このPCで Collet が動いている間だけ働きます。</p>
+        <label class="field">
+          <span class="label">販売ページのURL（GitHub で公開したページ）</span>
+          <input id="plan-site" class="text-input" type="url" placeholder="https://（GitHubの名前）.github.io/collet-site" autocomplete="off">
+        </label>
+        <div class="field">
+          <span class="label">Stripe の決済用リンクの「支払い後」に入れるURL</span>
+          <div class="key-row">
+            <code id="thanks-url" class="key-code wide"></code>
+            <button id="thanks-copy" class="copy-btn" type="button">コピー</button>
+          </div>
+        </div>
+        <p id="auto-status" class="small"></p>
+        <p id="auto-help" class="muted small"></p>
+        <div class="q-actions">
+          <button id="auto-check" class="btn ghost small" type="button">今すぐ確認</button>
+        </div>
+      </article>
+
+      <article id="plan-keys-card" class="card">
+        <h2>利用キーの一覧と、手で発行</h2>
+        <p class="muted">自動で渡した利用キーも、ここに並びます。Stripe 以外で払ってもらったときなどは、ここで手で作れます。発行した利用キーは、期限まで取り消せません。</p>
+        <p id="plan-nokey" class="small warn-text" hidden>このPCには、利用キーを作る鍵（owner フォルダ）がありません。</p>
+        <div class="key-row">
+          <input id="key-memo" class="text-input" type="text" placeholder="メモ（例：12月分・Aさん）" maxlength="60" aria-label="メモ" autocomplete="off">
+          <select id="key-plan" aria-label="プラン"></select>
+          <select id="key-months" aria-label="期間">
+            <option value="1">1か月</option>
+            <option value="3">3か月</option>
+            <option value="12">12か月</option>
+          </select>
+          <button id="key-issue" class="btn brand small" type="button">発行する</button>
+        </div>
+        <div class="table-wrap"><table id="key-table"></table></div>
+        <p class="muted small">利用キーを作る鍵は、collet フォルダの中の owner フォルダに入っています。なくすと新しい利用キーを作れなくなるので、USBメモリなどにコピーしておいてください。人に渡したり、公開したりはしないでください。</p>
+      </article>
+    </section>
+
+    <!-- 利用キーが必要なとき（C） -->
+    <section id="view-lock" class="view" hidden>
+      <article class="card lock-card">
+        <img src="/static/icon.png" alt="" width="72" height="72">
+        <h1>利用キーを入れてください</h1>
+        <p id="lock-text" class="muted"></p>
+        <div id="lock-plans" class="plan-offers"></div>
+        <div class="key-row">
+          <input id="lock-key" class="text-input" type="text" placeholder="COLLET- から始まる利用キーを貼り付け" aria-label="利用キー" autocomplete="off" spellcheck="false">
+          <button id="lock-save" class="btn primary" type="button">利用キーを入れる</button>
+        </div>
+        <p id="lock-owner" class="small warn-text" hidden>いまは「使う人の見え方」で確認中です。左の「販売モード」から元に戻せます。</p>
+      </article>
+    </section>
+
+    <img class="main-leaf" src="/static/img/leaf-blue.png" alt="" aria-hidden="true">
+  </div>
+</div>
+<div id="tooltip" class="tooltip" hidden></div>
+<p id="toast" class="toast" role="status" hidden></p>
+<script src="/static/app.js"></script>
+</body>
+</html>

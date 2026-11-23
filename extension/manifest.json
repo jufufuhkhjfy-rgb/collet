@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Collet ROOM アシスト",
+  "version": "1.2.0",
+  "description": "Collet で用意した紹介文と画像を、楽天ROOMの投稿画面に自動で入れます。投稿の確定（完了ボタン）はご自身でおこないます。",
+  "icons": { "128": "icon.png" },
+  "background": { "service_worker": "background.js" },
+  "permissions": ["storage"],
+  "host_permissions": ["http://127.0.0.1:8765/*"],
+  "content_scripts": [
+    { "matches": ["https://room.rakuten.co.jp/*"], "js": ["room.js"], "run_at": "document_idle" },
+    { "matches": ["http://127.0.0.1:8765/*"], "js": ["collet.js"], "run_at": "document_start" }
+  ]
+}

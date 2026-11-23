@@ -1,0 +1,31 @@
+{
+  "mode": "B",
+  "support_url": "",
+  "site_url": "https://jufufuhkhjfy-rgb.github.io/collet-site",
+  "plans": {
+    "standard": {
+      "label": "スタンダード",
+      "price": 300,
+      "shop_url": "https://buy.stripe.com/aFafZh3Jr2uhdoxeWb2Ji04",
+      "enabled": true,
+      "features": [
+        "ai",
+        "cards",
+        "bulk"
+      ]
+    },
+    "image": {
+      "label": "画像生成",
+      "price": 1000,
+      "shop_url": "https://buy.stripe.com/fZu14n5Rzfh30BL29p2Ji03",
+      "enabled": true,
+      "features": [
+        "ai",
+        "cards",
+        "bulk",
+        "room"
+      ]
+    }
+  },
+  "public_key": "NlgwuMjual-lc6j3p9d7BCGspXOFIMuMFQ6DOmkSCJs"
+}
